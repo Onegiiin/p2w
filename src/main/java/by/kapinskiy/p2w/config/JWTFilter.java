@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
@@ -35,7 +36,7 @@ public class JWTFilter extends OncePerRequestFilter {
             String jwt = authHeader.substring(7);
 
             if (jwt.isBlank()) {
-                httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token in Bearer Header");
+                httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT VerificationToken in Bearer Header");
                 return;
             }
 
@@ -47,18 +48,19 @@ public class JWTFilter extends OncePerRequestFilter {
 
                 List<SimpleGrantedAuthority> authorities = rawAuthorities.stream()
                         .map(SimpleGrantedAuthority::new)
-                        .toList();
+                        .collect(Collectors.toList());
 
-                // Создаем токен аутентификации
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         username, null, authorities);
 
-                // Устанавливаем аутентификацию в SecurityContext
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             } catch (JWTVerificationException exc) {
-                httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token");
+                httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                httpServletResponse.setContentType("application/json");
+                httpServletResponse.getWriter().write("{\"message\": \"Invalid JWT VerificationToken\"}");
                 return;
             }
         }

@@ -3,8 +3,9 @@ package by.kapinskiy.p2w.security;
 import by.kapinskiy.p2w.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.util.Collection;
-import java.util.Collections;
+import java.util.stream.Collectors;
 
 
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
@@ -16,7 +17,9 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));
+        return user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -46,6 +49,6 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isEnabled();
     }
 }

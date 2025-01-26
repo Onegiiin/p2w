@@ -4,8 +4,8 @@ import by.kapinskiy.p2w.DTO.LoginDTO;
 import by.kapinskiy.p2w.DTO.RegistrationDTO;
 import by.kapinskiy.p2w.models.User;
 import by.kapinskiy.p2w.services.AuthenticationService;
-import by.kapinskiy.p2w.util.ErrorResponse;
 import by.kapinskiy.p2w.util.RegistrationDTOValidator;
+import by.kapinskiy.p2w.util.exceptions.UserAlreadyExistsException;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +17,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -40,47 +43,63 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<?> registration(@RequestBody @Valid RegistrationDTO registration, BindingResult result) {
-        registrationDTOValidator.validate(registration, result);
-        if (result.hasErrors()) {
-            return handleBadRequest(result);
+    public ResponseEntity<String> registration(@RequestBody @Valid RegistrationDTO registration, BindingResult bindingResult) throws MethodArgumentNotValidException {
+        registrationDTOValidator.validate(registration, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            List<String> errors = new ArrayList<>();
+
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                errors.add(fieldError.getField() + ": " + fieldError.getDefaultMessage());
+            }
+            for (ObjectError globalError : bindingResult.getGlobalErrors()) {
+                errors.add(globalError.getObjectName() + ": " + globalError.getDefaultMessage());
+            }
+            throw new UserAlreadyExistsException(errors.toString());
         }
         User user = convertToUser(registration);
-        String jwt = authenticationService.performRegistration(user);
-        return new ResponseEntity<>("JWT: " + jwt, HttpStatus.CREATED);
+        String response = authenticationService.performRegistration(user);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginDTO loginDTO) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginDTO loginDTO) {
         String jwt = authenticationService.performLogin(loginDTO.getUsernameOrEmail(), loginDTO.getPassword());
-        return new ResponseEntity<>("JWT: " + jwt, HttpStatus.ACCEPTED);
+        return buildJwtResponse(jwt, "Login successful", HttpStatus.OK);
     }
 
     @GetMapping("/current-user")
-    public ResponseEntity<?> getCurrentUser() {
+    public ResponseEntity<Map<String, String>> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No user authenticated");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "No user authenticated"));
         }
 
-        return ResponseEntity.ok(authentication.getName());
+        Map<String, String> response = new HashMap<>();
+        response.put("username", authentication.getName());
+        response.put("message", "Current user retrieved successfully");
+
+        return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<ErrorResponse> handleBadRequest(BindingResult result) {
-        List<String> errors = new ArrayList<>();
-        for (FieldError fieldError : result.getFieldErrors()) {
-            errors.add(fieldError.getField() + ": " + fieldError.getDefaultMessage());
-        }
-        for (ObjectError globalError : result.getGlobalErrors()) {
-            errors.add(globalError.getObjectName() + ": " + globalError.getDefaultMessage());
-        }
-        ErrorResponse errorResponse = new ErrorResponse("Validation failed", errors);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    @GetMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(@RequestParam(name = "token") String token){
+        authenticationService.validateVerificationToken(token);
+        return ResponseEntity.ok("Email verification successful");
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(RuntimeException ex) {
-        return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    @GetMapping("/resend-token")
+    public ResponseEntity<String> resendToken(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(authenticationService.resendToken(authentication.getName()));
+    }
+
+    private ResponseEntity<Map<String, String>> buildJwtResponse(String jwt, String message, HttpStatus status) {
+        Map<String, String> response = new HashMap<>();
+        response.put("jwt", jwt);
+        response.put("message", message);
+        return new ResponseEntity<>(response, status);
     }
 
     public User convertToUser(RegistrationDTO registration){

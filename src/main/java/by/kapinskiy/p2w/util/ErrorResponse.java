@@ -1,26 +1,13 @@
 package by.kapinskiy.p2w.util;
 
-import java.util.List;
-
 public class ErrorResponse {
     private String message;
-    private List<String> details;
+    private long timestamp;
 
-    public ErrorResponse(String message, List<String> details) {
-        this.details = details;
-        this.message = message;
-    }
 
     public ErrorResponse(String message) {
         this.message = message;
-    }
-
-    public List<String> getDetails() {
-        return details;
-    }
-
-    public void setDetails(List<String> details) {
-        this.details = details;
+        this.timestamp = System.currentTimeMillis();
     }
 
     public String getMessage() {
@@ -29,5 +16,13 @@ public class ErrorResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

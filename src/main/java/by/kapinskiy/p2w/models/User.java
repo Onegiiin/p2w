@@ -2,12 +2,11 @@ package by.kapinskiy.p2w.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "user_account")
@@ -38,8 +37,36 @@ public class User {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @Column(name = "role")
-    private String role;
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    private List<Role> roles;
+
+    @OneToMany(mappedBy = "executor")
+    private List<Offer> offers;
+
+    @OneToMany(mappedBy = "consumer")
+    private List<Order> orders;
+
+    @Column(name = "enabled")
+    private boolean enabled;
+
+    @OneToOne(mappedBy = "user")
+    private VerificationToken verificationToken;
+
+    public VerificationToken getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(VerificationToken verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -73,12 +100,28 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
+    public List<Order> getOrders() {
+        return orders;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public List<Offer> getOffers() {
+        return offers;
+    }
+
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public Date getUpdatedAt() {

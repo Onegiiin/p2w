@@ -2,7 +2,7 @@ package by.kapinskiy.p2w.services;
 
 import by.kapinskiy.p2w.models.User;
 import by.kapinskiy.p2w.repositories.UsersRepository;
-import by.kapinskiy.p2w.util.exceptions.UserNotFoundException;
+import by.kapinskiy.p2w.util.exceptions.NotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = usersRepository.findByUsername(username)
-                        .orElseThrow(() -> new UserNotFoundException("User with username \"" + username + "\" not found"));
+                        .orElseThrow(() -> new NotFoundException("User with username \"" + username + "\" not found"));
 
         return new by.kapinskiy.p2w.security.UserDetails(user);
     }
@@ -28,7 +28,7 @@ public class UserDetailsService implements org.springframework.security.core.use
     public UserDetails loadUserByUsernameOrEmail(String usernameOrEmail) throws UsernameNotFoundException {
         User user = usersRepository.findByUsername(usernameOrEmail)
                 .orElseGet(() -> usersRepository.findByEmail(usernameOrEmail)
-                        .orElseThrow(() -> new UserNotFoundException("User with identifier \"" + usernameOrEmail + "\" not found")));
+                        .orElseThrow(() -> new NotFoundException("User with identifier \"" + usernameOrEmail + "\" not found")));
 
         return new by.kapinskiy.p2w.security.UserDetails(user);
     }

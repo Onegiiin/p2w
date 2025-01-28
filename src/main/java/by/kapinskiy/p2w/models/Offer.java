@@ -2,7 +2,8 @@ package by.kapinskiy.p2w.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+
+import java.util.List;
 
 @Entity
 @Table(name = "offer")
@@ -21,15 +22,18 @@ public class Offer {
     private User executor;
 
     @Column(name = "quantity")
+    @Min(value = 0, message = "Quantity can't be less than 0")
     private int quantity;
 
     @Column(name = "price")
-    @NotBlank(message = "Offer must have a price")
     @Min(value = 0, message = "Price can't be less than 0")
     private long price;
 
     @Column(name = "description")
     private String description;
+
+    @OneToMany(mappedBy = "offer")
+    private List<Order> orders;
 
     public User getExecutor() {
         return executor;
@@ -55,11 +59,11 @@ public class Offer {
         this.price = price;
     }
 
-    public Lot getProduct() {
+    public Lot getLot() {
         return lot;
     }
 
-    public void setProduct(Lot lot) {
+    public void setLot(Lot lot) {
         this.lot = lot;
     }
 
@@ -77,5 +81,13 @@ public class Offer {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }

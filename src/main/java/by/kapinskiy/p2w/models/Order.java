@@ -3,19 +3,54 @@ package by.kapinskiy.p2w.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "order")
+@Table(name = "\"order\"")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-    @Column(name = "is_completed")
-    private boolean isCompleted;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @ManyToOne()
     @JoinColumn(name = "consumer", referencedColumnName = "id")
     private User consumer;
+
+    @ManyToOne
+    @JoinColumn(name = "offer", referencedColumnName = "id")
+    private Offer offer;
+
+    @Column(name = "quantity")
+    private int quantity;
+
+    @Column(name = "total")
+    private long total;
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
+    }
+
+    public Offer getOffer() {
+        return offer;
+    }
+
+    public void setOffer(Offer offer) {
+        this.offer = offer;
+    }
 
     public User getConsumer() {
         return consumer;
@@ -33,11 +68,11 @@ public class Order {
         this.id = id;
     }
 
-    public boolean isCompleted() {
-        return isCompleted;
+    public OrderStatus getStatus() {
+        return status;
     }
 
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 }

@@ -11,16 +11,6 @@ public class LotDTO {
     @Length(min = 3, max = 100, message = "Lot name can't be less than 3 and more than 100 symbols")
     private String name;
 
-    private CategoryDTO category;
-
-    public CategoryDTO getCategory() {
-        return category;
-    }
-
-    public void setCategory(CategoryDTO category) {
-        this.category = category;
-    }
-
     public int getId() {
         return id;
     }

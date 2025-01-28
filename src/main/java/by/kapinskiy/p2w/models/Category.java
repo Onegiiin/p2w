@@ -23,10 +23,10 @@ public class Category {
     @JoinColumn(name = "parent_category", referencedColumnName = "id")
     private Category parentCategory;
 
-    @OneToMany(mappedBy = "parentCategory")
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
     private List<Category> subCategories;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Lot> lots;
 
     public List<Lot> getLots() {

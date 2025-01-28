@@ -12,6 +12,16 @@ public class CreateLotDTO {
 
     private int categoryId;
 
+    private boolean enableMultipleOffers;
+
+    public boolean isEnableMultipleOffers() {
+        return enableMultipleOffers;
+    }
+
+    public void setEnableMultipleOffers(boolean enableMultipleOffers) {
+        this.enableMultipleOffers = enableMultipleOffers;
+    }
+
     public int getCategoryId() {
         return categoryId;
     }

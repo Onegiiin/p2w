@@ -37,10 +37,10 @@ public class User {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "users", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "executor")
+    @OneToMany(mappedBy = "executor", cascade = CascadeType.ALL)
     private List<Offer> offers;
 
     @OneToMany(mappedBy = "consumer")
@@ -51,6 +51,17 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private VerificationToken verificationToken;
+
+    @Column(name = "balance")
+    private long balance;
+
+    public long getBalance() {
+        return balance;
+    }
+
+    public void setBalance(long balance) {
+        this.balance = balance;
+    }
 
     public VerificationToken getVerificationToken() {
         return verificationToken;

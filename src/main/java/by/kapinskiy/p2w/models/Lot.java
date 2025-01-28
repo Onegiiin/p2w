@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.List;
+
 @Entity
 @Table(name = "lot")
 public class Lot {
@@ -20,6 +22,20 @@ public class Lot {
     @ManyToOne()
     @JoinColumn(name = "category", referencedColumnName = "id")
     private Category category;
+
+    @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL)
+    private List<Offer> offerList;
+
+    @Column(name = "enable_multiple_offers")
+    private boolean enableMultipleOffer;
+
+    public List<Offer> getOfferList() {
+        return offerList;
+    }
+
+    public void setOfferList(List<Offer> offerList) {
+        this.offerList = offerList;
+    }
 
     public int getId() {
         return id;
@@ -45,5 +61,11 @@ public class Lot {
         this.category = category;
     }
 
+    public boolean isEnableMultipleOffer() {
+        return enableMultipleOffer;
+    }
 
+    public void setEnableMultipleOffer(boolean enableMultipleOffer) {
+        this.enableMultipleOffer = enableMultipleOffer;
+    }
 }

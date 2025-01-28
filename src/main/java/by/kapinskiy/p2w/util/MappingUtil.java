@@ -1,11 +1,7 @@
 package by.kapinskiy.p2w.util;
 
-import by.kapinskiy.p2w.DTO.CategoryDTO;
-import by.kapinskiy.p2w.DTO.CreateCategoryDTO;
-import by.kapinskiy.p2w.DTO.CreateLotDTO;
-import by.kapinskiy.p2w.DTO.LotDTO;
-import by.kapinskiy.p2w.models.Category;
-import by.kapinskiy.p2w.models.Lot;
+import by.kapinskiy.p2w.DTO.*;
+import by.kapinskiy.p2w.models.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,5 +45,30 @@ public class MappingUtil {
     public List<LotDTO> lotsListToDTO(List<Lot> lots) {
         return lots.stream().map(l -> modelMapper.map(l, LotDTO.class)).collect(Collectors.toList());
     }
+
+    public OfferDTO offerToDto(Offer offer) {
+        return modelMapper.map(offer, OfferDTO.class);
+    }
+
+    public Offer createOfferDTOToOffer(CreateOfferDTO createOfferDTO) {
+        Offer offer = new Offer();
+        offer.setDescription(createOfferDTO.getDescription());
+        offer.setQuantity(createOfferDTO.getQuantity());
+        offer.setPrice(createOfferDTO.getPrice());
+        return offer;
+    }
+
+    public UserDTO userToDTO(User user) {
+        return modelMapper.map(user, UserDTO.class);
+    }
+
+    public List<OfferDTO> offersListToDTO(List<Offer> offers) {
+        return offers.stream().map(o -> modelMapper.map(o, OfferDTO.class)).collect(Collectors.toList());
+    }
+
+    public OrderDTO orderToDTO(Order order) {
+        return modelMapper.map(order, OrderDTO.class);
+    }
+
 
 }

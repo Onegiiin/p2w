@@ -16,13 +16,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+    @ExceptionHandler({UserAlreadyExistsException.class, NotChangedException.class})
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(RuntimeException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({EntityNotCreatedException.class, InvalidTokenException.class, UserAlreadyVerifiedException.class, UserNotVerifiedException.class})
+    @ExceptionHandler({EntityNotCreatedException.class, OfferAlreadyExistsException.class,
+            InvalidTokenException.class, UserAlreadyVerifiedException.class,
+            UserNotVerifiedException.class, MoneyLackException.class})
     public ResponseEntity<ErrorResponse> handleEntityNotCreatedException(RuntimeException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

@@ -32,6 +32,7 @@ public class AuthenticationService {
     private final RolesRepository rolesRepository;
     private final EmailService emailService;
     private final VerificationTokensRepository verificationTokensRepository;
+    private final UsersService usersService;
     @Value("${default_role}")
     private String defaultRole;
 
@@ -42,7 +43,8 @@ public class AuthenticationService {
                                  UserDetailsService userDetailsService,
                                  RolesRepository rolesRepository,
                                  EmailService emailService,
-                                 VerificationTokensRepository verificationTokensRepository) {
+                                 VerificationTokensRepository verificationTokensRepository,
+                                 UsersService usersService) {
         this.passwordEncoder = passwordEncoder;
         this.usersRepository = usersRepository;
         this.jwtService = jwtService;
@@ -50,6 +52,7 @@ public class AuthenticationService {
         this.rolesRepository = rolesRepository;
         this.emailService = emailService;
         this.verificationTokensRepository = verificationTokensRepository;
+        this.usersService = usersService;
     }
 
     private String generateUniqueToken() {
@@ -121,7 +124,7 @@ public class AuthenticationService {
     @PreAuthorize("isAuthenticated()")
     @Transactional()
     public String resendToken(String username) {
-        User user = usersRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("user not found"));
+        User user = usersService.getCurrentUser();
         if (!user.isEnabled()) {
            return generateAndSendVerificationToken(user);
         } else {

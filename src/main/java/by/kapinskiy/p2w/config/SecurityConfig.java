@@ -42,7 +42,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/auth/**", "/categories/**", "/lots/**", "/error", "/offers/**").permitAll()
+                        .requestMatchers("/auth/**", "/categories/**", "/lots/**", "/error", "/offers/**", "/{username}/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(sm -> sm

@@ -70,5 +70,7 @@ public class MappingUtil {
         return modelMapper.map(order, OrderDTO.class);
     }
 
-
+    public List<OrderDTO> ordersListToDTO(List<Order> orders) {
+        return orders.stream().map(o -> modelMapper.map(o, OrderDTO.class)).collect(Collectors.toList());
+    }
 }

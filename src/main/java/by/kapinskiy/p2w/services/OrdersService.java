@@ -15,6 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @PreAuthorize("hasRole('USER')")
@@ -93,5 +95,9 @@ public class OrdersService {
         } else if (newStatus == OrderStatus.COMPLETED){
             completeOrder(orderId);
         }
+    }
+
+    public List<Order> getUserOrders(){
+        return ordersRepository.findAllByConsumer_id(usersService.getCurrentUser().getId());
     }
 }

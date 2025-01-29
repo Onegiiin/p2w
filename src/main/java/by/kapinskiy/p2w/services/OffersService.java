@@ -84,4 +84,7 @@ public class OffersService {
         return offersRepository.findByLot_Id(lotId);
     }
 
+    public List<Offer> getAllOffersByUsername(String username){
+        return offersRepository.findByExecutor_Id(usersService.findByUsername(username).orElseThrow(() -> new NotFoundException("User with such username not found")).getId());
+    }
 }

@@ -7,8 +7,7 @@ import org.hibernate.validator.constraints.Length;
 public class CategoryDTO {
     private int id;
 
-    @NotBlank(message = "Name can't be empty")
-    @Length(min = 3, max = 100, message = "Category name can't be less than 3 and more than 100 symbols")
+
     private String name;
 
     private CategoryDTO parentCategory;

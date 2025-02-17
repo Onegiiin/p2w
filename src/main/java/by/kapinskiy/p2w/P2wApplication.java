@@ -10,6 +10,7 @@ public class P2wApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(P2wApplication.class, args);
+
 	}
 
 	@Bean

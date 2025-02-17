@@ -1,9 +1,6 @@
 package by.kapinskiy.p2w.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 import java.util.List;
@@ -17,18 +14,12 @@ public class User {
     private int id;
 
     @Column(name = "username")
-    @NotBlank(message = "Username can't be empty")
-    @Length(min = 3, max = 25, message = "Username should be between 3 and 25 characters")
     private String username;
 
     @Column(name = "email")
-    @NotBlank(message = "Email can't be empty")
-    @Email(message = "Email should be in format username@example.com")
     private String email;
 
     @Column(name = "password")
-    @NotBlank(message = "Password can't be empty")
-    @Length(min = 2, message = "Password should be at least 8 symbols")
     private String password;
 
     @Column(name = "created_at")

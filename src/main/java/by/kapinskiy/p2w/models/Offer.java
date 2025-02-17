@@ -1,7 +1,6 @@
 package by.kapinskiy.p2w.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 
 import java.util.List;
 
@@ -22,11 +21,9 @@ public class Offer {
     private User executor;
 
     @Column(name = "quantity")
-    @Min(value = 0, message = "Quantity can't be less than 0")
     private int quantity;
 
     @Column(name = "price")
-    @Min(value = 0, message = "Price can't be less than 0")
     private long price;
 
     @Column(name = "description")

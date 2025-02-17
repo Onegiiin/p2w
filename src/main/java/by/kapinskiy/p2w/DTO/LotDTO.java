@@ -1,14 +1,9 @@
 package by.kapinskiy.p2w.DTO;
 
-import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Length;
-
 public class LotDTO {
 
     private int id;
 
-    @NotBlank(message = "Name can't be empty")
-    @Length(min = 3, max = 100, message = "Lot name can't be less than 3 and more than 100 symbols")
     private String name;
 
     public int getId() {

@@ -1,14 +1,11 @@
 package by.kapinskiy.p2w.DTO;
 
-import jakarta.validation.constraints.Min;
-
 public class OfferDTO {
     private int id;
 
-    @Min(value = 0, message = "Quantity can't be less than 0")
+
     private int quantity;
 
-    @Min(value = 0, message = "Price can't be less than 0")
     private long price;
 
     private String description;

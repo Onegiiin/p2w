@@ -1,8 +1,6 @@
 package by.kapinskiy.p2w.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
@@ -15,8 +13,6 @@ public class Lot {
     private int id;
 
     @Column(name = "name")
-    @NotBlank(message = "Name can't be empty")
-    @Length(min = 3, max = 100, message = "Lot name can't be less than 3 and more than 100 symbols")
     private String name;
 
     @ManyToOne()
